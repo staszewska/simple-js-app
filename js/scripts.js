@@ -1,10 +1,10 @@
-let pokemonList = [
-  { name: "Bulbasaur", height: 8, types: ["grass", "poison"] },
-  { name: "Pikachu", height: 0.4, types: ["electric", "psychic"] },
-  { name: "Seadra", height: 1.2, types: ["dragon", "ice"] },
-  { name: "Lapras", height: 2.5, types: ["ghost", "water"] },
-  { name: "Caterpie", height: 0.8, types: ["electric", "normal"] },
-];
+// let pokemonList = [
+//   { name: "Bulbasaur", height: 8, types: ["grass", "poison"] },
+//   { name: "Pikachu", height: 0.4, types: ["electric", "psychic"] },
+//   { name: "Seadra", height: 1.2, types: ["dragon", "ice"] },
+//   { name: "Lapras", height: 2.5, types: ["ghost", "water"] },
+//   { name: "Caterpie", height: 0.8, types: ["electric", "normal"] },
+// ];
 
 // "for" loop itarates over the elements of the "pokemonList" array
 // for (let i = 0; i < pokemonList.length; i++) {
@@ -25,7 +25,50 @@ let pokemonList = [
 //   }
 // }
 
-pokemonList.forEach(function (pokemon) {
+const pokemonRepository = (function () {
+  let pokemonList = [
+    { name: "Bulbasaur", height: 8, types: ["grass", "poison"] },
+    { name: "Pikachu", height: 0.4, types: ["electric", "psychic"] },
+    { name: "Seadra", height: 1.2, types: ["dragon", "ice"] },
+    { name: "Lapras", height: 2.5, types: ["ghost", "water"] },
+    { name: "Caterpie", height: 0.8, types: ["electric", "normal"] },
+  ];
+
+  function getAll() {
+    return pokemonList;
+  }
+
+  function add(pokemon) {
+    if (typeof pokemon === "object") {
+      if (
+        Object.keys(pokemon).includes("name") &&
+        Object.keys(pokemon).includes("height") &&
+        Object.keys(pokemon).includes("types")
+      ) {
+        pokemonList.push(pokemon);
+      } else {
+        return "Must have properties 'name' 'height' and 'types'";
+      }
+    } else {
+      return "Must be an object";
+    }
+  }
+
+  function findPokemonByName(name) {
+    return pokemonList.filter(function (pokemon) {
+      return pokemon.name === name;
+    });
+  }
+
+  // console.log(findPokemonByName("Pikachu"));
+
+  return {
+    getAll: getAll,
+    add: add,
+  };
+})();
+
+pokemonRepository.getAll().forEach(function (pokemon) {
   const standardMessage = `${pokemon.name} (height ${pokemon.height})`;
   document.write(`<div>${standardMessage}</div>`);
 });
