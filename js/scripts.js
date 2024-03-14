@@ -7,22 +7,25 @@ let pokemonList = [
 ];
 
 // "for" loop itarates over the elements of the "pokemonList" array
-for (let i = 0; i < pokemonList.length; i++) {
-  //contant variable with Pokemon's name and height
-  const standardMessage = `${pokemonList[i].name} (height ${pokemonList[i].height})`;
+// for (let i = 0; i < pokemonList.length; i++) {
+// contant variable with Pokemon's name and height
+// const standardMessage = `${pokemonList[i].name} (height ${pokemonList[i].height})`;
 
-  // if condition is true, display following
-  if (pokemonList[i].height > 5) {
-    document.write(`<div>${standardMessage} - Wow, that's big! </div>`);
+// if condition is true, display following
+// if (pokemonList[i].height > 5) {
+//   document.write(`<div>${standardMessage} - Wow, that's big! </div>`);
 
-    // otherwise, display following
-  } else {
-    document.write(
-      // displays Pokemon's name and height
-      // pokemonList[i].name + " " + "(height: " + pokemonList[i].height + ")" + " "
+// otherwise, display following
+// } else {
+//   document.write(
+// displays Pokemon's name and height
+// pokemonList[i].name + " " + "(height: " + pokemonList[i].height + ")" + " " // displays Pokemon's name and heigth in a div tag using template literal
+//       `<div>${standardMessage}</div>`
+//     );
+//   }
+// }
 
-      // displays Pokemon's name and heigth in a div tag using template literal
-      `<div>${standardMessage}</div>`
-    );
-  }
-}
+pokemonList.forEach(function (pokemon) {
+  const standardMessage = `${pokemon.name} (height ${pokemon.height})`;
+  document.write(`<div>${standardMessage}</div>`);
+});
