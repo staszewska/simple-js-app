@@ -50,6 +50,7 @@ const pokemonRepository = (function () {
     addEventListener(button, pokemon);
   }
 
+  // Adds eventListener to a button
   function addEventListener(button, pokemon) {
     button.addEventListener("click", () => {
       showDetails(pokemon);
