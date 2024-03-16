@@ -34,6 +34,16 @@ const pokemonRepository = (function () {
     { name: "Caterpie", height: 0.8, types: ["electric", "normal"] },
   ];
 
+  function addListItem(pokemon) {
+    let ulElement = document.querySelector(".pokemon-list");
+    let listItem = document.createElement("li");
+    let button = document.createElement("button");
+    button.innerText = pokemon.name;
+    button.classList.add("pokemon-button");
+    listItem.appendChild(button);
+    ulElement.appendChild(listItem);
+  }
+
   function getAll() {
     return pokemonList;
   }
@@ -65,10 +75,10 @@ const pokemonRepository = (function () {
   return {
     getAll: getAll,
     add: add,
+    addListItem: addListItem,
   };
 })();
 
 pokemonRepository.getAll().forEach(function (pokemon) {
-  const standardMessage = `${pokemon.name} (height ${pokemon.height})`;
-  document.write(`<div>${standardMessage}</div>`);
+  pokemonRepository.addListItem(pokemon);
 });
