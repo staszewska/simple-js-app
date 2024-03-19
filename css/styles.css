@@ -41,6 +41,7 @@ img {
 .pokemon-list {
   list-style-type: none;
   display: flex;
+  flex-wrap: wrap;
 
   @media (width <= 720px) {
     display: flex;
