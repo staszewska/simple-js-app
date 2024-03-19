@@ -1,409 +1,252 @@
-(function (global, factory) {
-  typeof exports === "object" && typeof module !== "undefined"
-    ? factory()
-    : typeof define === "function" && define.amd
-    ? define(factory)
-    : factory();
-})(this, function () {
+!(function (e, t) {
+  "object" == typeof exports && "undefined" != typeof module
+    ? t()
+    : "function" == typeof define && define.amd
+    ? define(t)
+    : t();
+})(0, function () {
   "use strict";
-
-  /**
-   * @this {Promise}
-   */
-  function finallyConstructor(callback) {
-    var constructor = this.constructor;
+  function e(e) {
+    var t = this.constructor;
     return this.then(
-      function (value) {
-        // @ts-ignore
-        return constructor.resolve(callback()).then(function () {
-          return value;
+      function (n) {
+        return t.resolve(e()).then(function () {
+          return n;
         });
       },
-      function (reason) {
-        // @ts-ignore
-        return constructor.resolve(callback()).then(function () {
-          // @ts-ignore
-          return constructor.reject(reason);
+      function (n) {
+        return t.resolve(e()).then(function () {
+          return t.reject(n);
         });
       }
     );
   }
-
-  function allSettled(arr) {
-    var P = this;
-    return new P(function (resolve, reject) {
-      if (!(arr && typeof arr.length !== "undefined")) {
-        return reject(
+  function t(e) {
+    return new this(function (t, n) {
+      function r(e, n) {
+        if (n && ("object" == typeof n || "function" == typeof n)) {
+          var f = n.then;
+          if ("function" == typeof f)
+            return void f.call(
+              n,
+              function (t) {
+                r(e, t);
+              },
+              function (n) {
+                (o[e] = { status: "rejected", reason: n }), 0 == --i && t(o);
+              }
+            );
+        }
+        (o[e] = { status: "fulfilled", value: n }), 0 == --i && t(o);
+      }
+      if (!e || "undefined" == typeof e.length)
+        return n(
           new TypeError(
-            typeof arr +
+            typeof e +
               " " +
-              arr +
+              e +
               " is not iterable(cannot read property Symbol(Symbol.iterator))"
           )
         );
-      }
-      var args = Array.prototype.slice.call(arr);
-      if (args.length === 0) return resolve([]);
-      var remaining = args.length;
-
-      function res(i, val) {
-        if (val && (typeof val === "object" || typeof val === "function")) {
-          var then = val.then;
-          if (typeof then === "function") {
-            then.call(
-              val,
-              function (val) {
-                res(i, val);
-              },
-              function (e) {
-                args[i] = { status: "rejected", reason: e };
-                if (--remaining === 0) {
-                  resolve(args);
-                }
-              }
-            );
-            return;
-          }
-        }
-        args[i] = { status: "fulfilled", value: val };
-        if (--remaining === 0) {
-          resolve(args);
-        }
-      }
-
-      for (var i = 0; i < args.length; i++) {
-        res(i, args[i]);
-      }
+      var o = Array.prototype.slice.call(e);
+      if (0 === o.length) return t([]);
+      for (var i = o.length, f = 0; o.length > f; f++) r(f, o[f]);
     });
   }
-
-  /**
-   * @constructor
-   */
-  function AggregateError(errors, message) {
-    (this.name = "AggregateError"), (this.errors = errors);
-    this.message = message || "";
+  function n(e, t) {
+    (this.name = "AggregateError"), (this.errors = e), (this.message = t || "");
   }
-  AggregateError.prototype = Error.prototype;
-
-  function any(arr) {
-    var P = this;
-    return new P(function (resolve, reject) {
-      if (!(arr && typeof arr.length !== "undefined")) {
-        return reject(new TypeError("Promise.any accepts an array"));
-      }
-
-      var args = Array.prototype.slice.call(arr);
-      if (args.length === 0) return reject();
-
-      var rejectionReasons = [];
-      for (var i = 0; i < args.length; i++) {
+  function r(e) {
+    var t = this;
+    return new t(function (r, o) {
+      if (!e || "undefined" == typeof e.length)
+        return o(new TypeError("Promise.any accepts an array"));
+      var i = Array.prototype.slice.call(e);
+      if (0 === i.length) return o();
+      for (var f = [], u = 0; i.length > u; u++)
         try {
-          P.resolve(args[i])
-            .then(resolve)
-            .catch(function (error) {
-              rejectionReasons.push(error);
-              if (rejectionReasons.length === args.length) {
-                reject(
-                  new AggregateError(
-                    rejectionReasons,
-                    "All promises were rejected"
-                  )
-                );
-              }
+          t.resolve(i[u])
+            .then(r)
+            ["catch"](function (e) {
+              f.push(e),
+                f.length === i.length &&
+                  o(new n(f, "All promises were rejected"));
             });
-        } catch (ex) {
-          reject(ex);
+        } catch (c) {
+          o(c);
         }
-      }
     });
   }
-
-  // Store setTimeout reference so promise-polyfill will be unaffected by
-  // other code modifying setTimeout (like sinon.useFakeTimers())
-  var setTimeoutFunc = setTimeout;
-
-  function isArray(x) {
-    return Boolean(x && typeof x.length !== "undefined");
+  function o(e) {
+    return !(!e || "undefined" == typeof e.length);
   }
-
-  function noop() {}
-
-  // Polyfill for Function.prototype.bind
-  function bind(fn, thisArg) {
-    return function () {
-      fn.apply(thisArg, arguments);
-    };
-  }
-
-  /**
-   * @constructor
-   * @param {Function} fn
-   */
-  function Promise(fn) {
-    if (!(this instanceof Promise))
+  function i() {}
+  function f(e) {
+    if (!(this instanceof f))
       throw new TypeError("Promises must be constructed via new");
-    if (typeof fn !== "function") throw new TypeError("not a function");
-    /** @type {!number} */
-    this._state = 0;
-    /** @type {!boolean} */
-    this._handled = false;
-    /** @type {Promise|undefined} */
-    this._value = undefined;
-    /** @type {!Array<!Function>} */
-    this._deferreds = [];
-
-    doResolve(fn, this);
+    if ("function" != typeof e) throw new TypeError("not a function");
+    (this._state = 0),
+      (this._handled = !1),
+      (this._value = undefined),
+      (this._deferreds = []),
+      s(e, this);
   }
-
-  function handle(self, deferred) {
-    while (self._state === 3) {
-      self = self._value;
-    }
-    if (self._state === 0) {
-      self._deferreds.push(deferred);
-      return;
-    }
-    self._handled = true;
-    Promise._immediateFn(function () {
-      var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
-      if (cb === null) {
-        (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
-        return;
-      }
-      var ret;
-      try {
-        ret = cb(self._value);
-      } catch (e) {
-        reject(deferred.promise, e);
-        return;
-      }
-      resolve(deferred.promise, ret);
-    });
+  function u(e, t) {
+    for (; 3 === e._state; ) e = e._value;
+    0 !== e._state
+      ? ((e._handled = !0),
+        f._immediateFn(function () {
+          var n = 1 === e._state ? t.onFulfilled : t.onRejected;
+          if (null !== n) {
+            var r;
+            try {
+              r = n(e._value);
+            } catch (o) {
+              return void a(t.promise, o);
+            }
+            c(t.promise, r);
+          } else (1 === e._state ? c : a)(t.promise, e._value);
+        }))
+      : e._deferreds.push(t);
   }
-
-  function resolve(self, newValue) {
+  function c(e, t) {
     try {
-      // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-      if (newValue === self)
+      if (t === e)
         throw new TypeError("A promise cannot be resolved with itself.");
-      if (
-        newValue &&
-        (typeof newValue === "object" || typeof newValue === "function")
-      ) {
-        var then = newValue.then;
-        if (newValue instanceof Promise) {
-          self._state = 3;
-          self._value = newValue;
-          finale(self);
-          return;
-        } else if (typeof then === "function") {
-          doResolve(bind(then, newValue), self);
-          return;
-        }
+      if (t && ("object" == typeof t || "function" == typeof t)) {
+        var n = t.then;
+        if (t instanceof f) return (e._state = 3), (e._value = t), void l(e);
+        if ("function" == typeof n)
+          return void s(
+            (function (e, t) {
+              return function () {
+                e.apply(t, arguments);
+              };
+            })(n, t),
+            e
+          );
       }
-      self._state = 1;
-      self._value = newValue;
-      finale(self);
-    } catch (e) {
-      reject(self, e);
+      (e._state = 1), (e._value = t), l(e);
+    } catch (r) {
+      a(e, r);
     }
   }
-
-  function reject(self, newValue) {
-    self._state = 2;
-    self._value = newValue;
-    finale(self);
+  function a(e, t) {
+    (e._state = 2), (e._value = t), l(e);
   }
-
-  function finale(self) {
-    if (self._state === 2 && self._deferreds.length === 0) {
-      Promise._immediateFn(function () {
-        if (!self._handled) {
-          Promise._unhandledRejectionFn(self._value);
-        }
+  function l(e) {
+    2 === e._state &&
+      0 === e._deferreds.length &&
+      f._immediateFn(function () {
+        e._handled || f._unhandledRejectionFn(e._value);
       });
-    }
-
-    for (var i = 0, len = self._deferreds.length; i < len; i++) {
-      handle(self, self._deferreds[i]);
-    }
-    self._deferreds = null;
+    for (var t = 0, n = e._deferreds.length; n > t; t++) u(e, e._deferreds[t]);
+    e._deferreds = null;
   }
-
-  /**
-   * @constructor
-   */
-  function Handler(onFulfilled, onRejected, promise) {
-    this.onFulfilled = typeof onFulfilled === "function" ? onFulfilled : null;
-    this.onRejected = typeof onRejected === "function" ? onRejected : null;
-    this.promise = promise;
-  }
-
-  /**
-   * Take a potentially misbehaving resolver function and make sure
-   * onFulfilled and onRejected are only called once.
-   *
-   * Makes no guarantees about asynchrony.
-   */
-  function doResolve(fn, self) {
-    var done = false;
+  function s(e, t) {
+    var n = !1;
     try {
-      fn(
-        function (value) {
-          if (done) return;
-          done = true;
-          resolve(self, value);
+      e(
+        function (e) {
+          n || ((n = !0), c(t, e));
         },
-        function (reason) {
-          if (done) return;
-          done = true;
-          reject(self, reason);
+        function (e) {
+          n || ((n = !0), a(t, e));
         }
       );
-    } catch (ex) {
-      if (done) return;
-      done = true;
-      reject(self, ex);
+    } catch (r) {
+      if (n) return;
+      (n = !0), a(t, r);
     }
   }
-
-  Promise.prototype["catch"] = function (onRejected) {
-    return this.then(null, onRejected);
-  };
-
-  Promise.prototype.then = function (onFulfilled, onRejected) {
-    // @ts-ignore
-    var prom = new this.constructor(noop);
-
-    handle(this, new Handler(onFulfilled, onRejected, prom));
-    return prom;
-  };
-
-  Promise.prototype["finally"] = finallyConstructor;
-
-  Promise.all = function (arr) {
-    return new Promise(function (resolve, reject) {
-      if (!isArray(arr)) {
-        return reject(new TypeError("Promise.all accepts an array"));
-      }
-
-      var args = Array.prototype.slice.call(arr);
-      if (args.length === 0) return resolve([]);
-      var remaining = args.length;
-
-      function res(i, val) {
-        try {
-          if (val && (typeof val === "object" || typeof val === "function")) {
-            var then = val.then;
-            if (typeof then === "function") {
-              then.call(
-                val,
-                function (val) {
-                  res(i, val);
-                },
-                reject
-              );
-              return;
+  n.prototype = Error.prototype;
+  var d = setTimeout;
+  (f.prototype["catch"] = function (e) {
+    return this.then(null, e);
+  }),
+    (f.prototype.then = function (e, t) {
+      var n = new this.constructor(i);
+      return (
+        u(
+          this,
+          new (function (e, t, n) {
+            (this.onFulfilled = "function" == typeof e ? e : null),
+              (this.onRejected = "function" == typeof t ? t : null),
+              (this.promise = n);
+          })(e, t, n)
+        ),
+        n
+      );
+    }),
+    (f.prototype["finally"] = e),
+    (f.all = function (e) {
+      return new f(function (t, n) {
+        function r(e, o) {
+          try {
+            if (o && ("object" == typeof o || "function" == typeof o)) {
+              var u = o.then;
+              if ("function" == typeof u)
+                return void u.call(
+                  o,
+                  function (t) {
+                    r(e, t);
+                  },
+                  n
+                );
             }
+            (i[e] = o), 0 == --f && t(i);
+          } catch (c) {
+            n(c);
           }
-          args[i] = val;
-          if (--remaining === 0) {
-            resolve(args);
-          }
-        } catch (ex) {
-          reject(ex);
         }
-      }
-
-      for (var i = 0; i < args.length; i++) {
-        res(i, args[i]);
-      }
+        if (!o(e)) return n(new TypeError("Promise.all accepts an array"));
+        var i = Array.prototype.slice.call(e);
+        if (0 === i.length) return t([]);
+        for (var f = i.length, u = 0; i.length > u; u++) r(u, i[u]);
+      });
+    }),
+    (f.any = r),
+    (f.allSettled = t),
+    (f.resolve = function (e) {
+      return e && "object" == typeof e && e.constructor === f
+        ? e
+        : new f(function (t) {
+            t(e);
+          });
+    }),
+    (f.reject = function (e) {
+      return new f(function (t, n) {
+        n(e);
+      });
+    }),
+    (f.race = function (e) {
+      return new f(function (t, n) {
+        if (!o(e)) return n(new TypeError("Promise.race accepts an array"));
+        for (var r = 0, i = e.length; i > r; r++) f.resolve(e[r]).then(t, n);
+      });
+    }),
+    (f._immediateFn =
+      ("function" == typeof setImmediate &&
+        function (e) {
+          setImmediate(e);
+        }) ||
+      function (e) {
+        d(e, 0);
+      }),
+    (f._unhandledRejectionFn = function (e) {
+      void 0 !== console &&
+        console &&
+        console.warn("Possible Unhandled Promise Rejection:", e);
     });
-  };
-
-  Promise.any = any;
-
-  Promise.allSettled = allSettled;
-
-  Promise.resolve = function (value) {
-    if (value && typeof value === "object" && value.constructor === Promise) {
-      return value;
-    }
-
-    return new Promise(function (resolve) {
-      resolve(value);
-    });
-  };
-
-  Promise.reject = function (value) {
-    return new Promise(function (resolve, reject) {
-      reject(value);
-    });
-  };
-
-  Promise.race = function (arr) {
-    return new Promise(function (resolve, reject) {
-      if (!isArray(arr)) {
-        return reject(new TypeError("Promise.race accepts an array"));
-      }
-
-      for (var i = 0, len = arr.length; i < len; i++) {
-        Promise.resolve(arr[i]).then(resolve, reject);
-      }
-    });
-  };
-
-  // Use polyfill for setImmediate for performance gains
-  Promise._immediateFn =
-    // @ts-ignore
-    (typeof setImmediate === "function" &&
-      function (fn) {
-        // @ts-ignore
-        setImmediate(fn);
-      }) ||
-    function (fn) {
-      setTimeoutFunc(fn, 0);
-    };
-
-  Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
-    if (typeof console !== "undefined" && console) {
-      console.warn("Possible Unhandled Promise Rejection:", err); // eslint-disable-line no-console
-    }
-  };
-
-  /** @suppress {undefinedVars} */
-  var globalNS = (function () {
-    // the only reliable means to get the global object is
-    // `Function('return this')()`
-    // However, this causes CSP violations in Chrome apps.
-    if (typeof self !== "undefined") {
-      return self;
-    }
-    if (typeof window !== "undefined") {
-      return window;
-    }
-    if (typeof global !== "undefined") {
-      return global;
-    }
-    throw new Error("unable to locate global object");
+  var p = (function () {
+    if ("undefined" != typeof self) return self;
+    if ("undefined" != typeof window) return window;
+    if ("undefined" != typeof global) return global;
+    throw Error("unable to locate global object");
   })();
-
-  // Expose the polyfill if Promise is undefined or set to a
-  // non-function value. The latter can be due to a named HTMLElement
-  // being exposed by browsers for legacy reasons.
-  // https://github.com/taylorhakes/promise-polyfill/issues/114
-  if (typeof globalNS["Promise"] !== "function") {
-    globalNS["Promise"] = Promise;
-  } else {
-    if (!globalNS.Promise.prototype["finally"]) {
-      globalNS.Promise.prototype["finally"] = finallyConstructor;
-    }
-    if (!globalNS.Promise.allSettled) {
-      globalNS.Promise.allSettled = allSettled;
-    }
-    if (!globalNS.Promise.any) {
-      globalNS.Promise.any = any;
-    }
-  }
+  "function" != typeof p.Promise
+    ? (p.Promise = f)
+    : (p.Promise.prototype["finally"] || (p.Promise.prototype["finally"] = e),
+      p.Promise.allSettled || (p.Promise.allSettled = t),
+      p.Promise.any || (p.Promise.any = r));
 });
