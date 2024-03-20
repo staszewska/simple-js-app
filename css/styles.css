@@ -77,7 +77,10 @@ img {
 .modal {
 
   margin: auto;
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
   background: #fff;
   padding: 15px;

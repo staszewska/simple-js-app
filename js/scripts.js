@@ -134,33 +134,63 @@ const pokemonRepository = (function () {
     });
   }
 
-  function showModal(title, text, imageUrl) {
+  function showModal(name, height, imageUrl) {
     let modalContainer = document.querySelector("#modal-container");
-
+    //modal created
     let modal = document.createElement("div");
     modal.classList.add("modal");
 
+    //button to close the modal
     let closeModalButton = document.createElement("button");
     closeModalButton.classList.add("modal-close");
     closeModalButton.innerText = "Close";
 
-    let titleElement = document.createElement("h1");
-    titleElement.innerText = title;
+    // event listener to handle the click event on the close modal button and execute the hideModal function
+    closeModalButton.addEventListener("click", hideModal);
 
-    let contentElement = document.createElement("p");
-    contentElement.innerText = text;
-
+    // create a new elements with name, heigth and image
+    let nameElement = document.createElement("h1");
+    nameElement.innerText = name;
+    let heightElement = document.createElement("p");
+    heightElement.innerText = height;
     let imageElement = document.createElement("img");
     imageElement.src = imageUrl;
 
     modal.appendChild(closeModalButton);
-    modal.appendChild(titleElement);
-    modal.appendChild(contentElement);
+    modal.appendChild(nameElement);
+    modal.appendChild(heightElement);
     modal.appendChild(imageElement);
     modalContainer.appendChild(modal);
 
     modalContainer.classList.add("is-visible");
+
+    // event listener to the modal container to close the modal when clicked outside of the modal container
+    modalContainer.addEventListener("click", (e) => {
+      let target = e.target;
+      // check if the click occurred on the modal container itself (not on any of its child elements)
+      if (target === modalContainer) {
+        hideModal();
+      }
+    });
   }
+
+  function hideModal() {
+    let modalContainer = document.querySelector("#modal-container");
+
+    modalContainer.classList.remove("is-visible");
+    // removing modal content after each closing of the modal container
+    Array.from(modalContainer.children).forEach((element) => {
+      element.remove();
+    });
+  }
+
+  // event listener to the modal container to close the modal when "escape" key is pressed
+  window.addEventListener("keydown", (e) => {
+    let modalContainer = document.querySelector("#modal-container");
+    if (e.key === "Escape" && modalContainer.classList.contains("is-visible")) {
+      hideModal();
+    }
+  });
 
   return {
     getAll: getAll,
