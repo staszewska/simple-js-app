@@ -30,8 +30,9 @@ const pokemonRepository = (function () {
   let apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=20";
 
   function addListItem(pokemon) {
-    let ulElement = document.querySelector(".pokemon-list");
+    let ulElement = document.querySelector(".list-group");
     let listItem = document.createElement("li");
+    listItem.classList.add("list-group-item");
     let button = document.createElement("button");
     button.innerText = pokemon.name;
     button.classList.add("pokemon-button");
@@ -71,7 +72,7 @@ const pokemonRepository = (function () {
   function showLoadingMessage() {
     let message = document.createElement("p");
     message.innerText = "Loading...";
-    let ulElement = document.querySelector(".pokemon-list");
+    let ulElement = document.querySelector(".list-group");
     ulElement.appendChild(message);
     message.classList.add("loading");
   }
