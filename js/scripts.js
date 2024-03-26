@@ -35,7 +35,8 @@ const pokemonRepository = (function () {
     listItem.classList.add("list-group-item");
     let button = document.createElement("button");
     button.innerText = pokemon.name;
-    button.classList.add("pokemon-button");
+    button.classList.add("btn");
+    button.classList.add("btn-outline-secondary");
     listItem.appendChild(button);
     ulElement.appendChild(listItem);
 
