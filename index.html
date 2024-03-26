@@ -11,13 +11,27 @@
       crossorigin="anonymous"
     />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <section class="pokemon">
-      <h1>List of pokemons</h1>
-      <img src="img/pok-mon-go-logo-png-30.png" />
-    </section>
+    <nav class="navbar navbar-light bg-light fixed-top">
+      <a class="navbar-brand" href="#">
+        <img
+          src="img/pok-mon-go-logo-png-30.png"
+          width="40"
+          height="40"
+          class="d-inline-block align-top"
+          alt=""
+        /><span class="navbar-text"> List of pokemons</span>
+      </a>
+    </nav>
 
     <div class="pokemon-container">
       <ul class="list-group"></ul>
