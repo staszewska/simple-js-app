@@ -4,7 +4,7 @@ body {
   
 }
 
-.navbar.navbar-light {
+.container-fluid.display-flex, .navbar-brand.display-flex {
   display: flex;
   justify-content: center;
 }
@@ -54,7 +54,7 @@ div {
   text-align: center;
 }
 
-.modal {
+/* .modal {
 
   margin: auto;
   display: flex;
@@ -67,4 +67,4 @@ div {
   width: 100%;
   max-width: 700px;
   text-align: left;
-}
+} */
