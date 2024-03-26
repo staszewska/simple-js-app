@@ -37,6 +37,7 @@ const pokemonRepository = (function () {
     button.innerText = pokemon.name;
     button.classList.add("btn");
     button.classList.add("btn-outline-secondary");
+    button.classList.add("btn-lg");
     listItem.appendChild(button);
     ulElement.appendChild(listItem);
 
