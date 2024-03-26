@@ -25,14 +25,14 @@
     <nav class="navbar bg-body-tertiary fixed-top">
       <div class="container-fluid display-flex">
         <a class="navbar-brand display-flex" href="#">
-        <img
-          src="img/pok-mon-go-logo-png-30.png"
-          width="40"
-          height="40"
-          class="d-inline-block align-top"
-          alt=""
-        /><span class="navbar-text"> List of pokemons</span>
-      </a>
+          <img
+            src="img/pok-mon-go-logo-png-30.png"
+            width="40"
+            height="40"
+            class="d-inline-block align-top"
+            alt=""
+          /><span class="navbar-text"> List of pokemons</span>
+        </a>
       </div>
     </nav>
 
@@ -40,7 +40,43 @@
       <ul class="list-group"></ul>
     </div>
 
-    <div id="modal-container"></div>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="staticBackdrop"
+      data-bs-backdrop="static"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">
+              Pokemon name
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <div class="modal-body"></div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Using List.js -->
     <!-- <div id="users">
